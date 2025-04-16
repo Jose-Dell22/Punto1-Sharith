@@ -2,7 +2,7 @@
 
 class Empleado {
     const SMLV = 1600000;
-    private $conn;
+
     private $id;
     private $nombre;
     private $salarioBase;
@@ -11,8 +11,7 @@ class Empleado {
     private $horasExtraFestivas;
     private $nivelRiesgo;
 
-    public function __construct($conn, $nombre, $salarioBase, $horasExtraDia = 0, $horasExtraNoche = 0, $horasExtraFestivas = 0, $nivelRiesgo = 1) {
-        $this->conn = $conn;
+    public function __construct($nombre, $salarioBase, $horasExtraDia = 0, $horasExtraNoche = 0, $horasExtraFestivas = 0, $nivelRiesgo = 1) {
         $this->nombre = $nombre;
         $this->salarioBase = $salarioBase;
         $this->horasExtraDia = $horasExtraDia;
@@ -21,16 +20,65 @@ class Empleado {
         $this->nivelRiesgo = $nivelRiesgo;
     }
 
-    public function guardar() {
-        $sql = "INSERT INTO empleados (nombre, salario_base, horas_extra_dia, horas_extra_noche, horas_extra_festivas, nivel_riesgo)
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sdiiii", $this->nombre, $this->salarioBase, $this->horasExtraDia, $this->horasExtraNoche, $this->horasExtraFestivas, $this->nivelRiesgo);
-        $stmt->execute();
-        $this->id = $stmt->insert_id;
-        $stmt->close();
+    // Getters
+    public function getId() {
+        return $this->id;
     }
 
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function getSalarioBase() {
+        return $this->salarioBase;
+    }
+
+    public function getHorasExtraDia() {
+        return $this->horasExtraDia;
+    }
+
+    public function getHorasExtraNoche() {
+        return $this->horasExtraNoche;
+    }
+
+    public function getHorasExtraFestivas() {
+        return $this->horasExtraFestivas;
+    }
+
+    public function getNivelRiesgo() {
+        return $this->nivelRiesgo;
+    }
+
+    // Setters
+    public function setId($id) {
+        $this->id = $id;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function setSalarioBase($salarioBase) {
+        $this->salarioBase = $salarioBase;
+    }
+
+    public function setHorasExtraDia($horasExtraDia) {
+        $this->horasExtraDia = $horasExtraDia;
+    }
+
+    public function setHorasExtraNoche($horasExtraNoche) {
+        $this->horasExtraNoche = $horasExtraNoche;
+    }
+
+    public function setHorasExtraFestivas($horasExtraFestivas) {
+        $this->horasExtraFestivas = $horasExtraFestivas;
+    }
+
+    public function setNivelRiesgo($nivelRiesgo) {
+        $this->nivelRiesgo = $nivelRiesgo;
+    }
+
+    
     private function calcularSubsidio() {
         return $this->salarioBase < 2 * self::SMLV ? self::SMLV : 0;
     }
@@ -50,7 +98,7 @@ class Empleado {
         $salud = $this->salarioBase * 0.04;
         $pension = $this->salarioBase * 0.04;
         $arl = $this->salarioBase * $this->obtenerPorcentajeARL();
-        return $salud + pension + arl;
+        return $salud + $pension + $arl;
     }
 
     private function obtenerPorcentajeARL() {
